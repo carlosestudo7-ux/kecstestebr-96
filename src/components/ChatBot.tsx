@@ -40,8 +40,8 @@ const ChatBot = () => {
     const timer = setTimeout(() => {
       if (!isOpen) {
         setShowNotification(true);
-        // Remove a notificação após 5 segundos
-        setTimeout(() => setShowNotification(false), 5000);
+        // Remove a notificação após 20 segundos
+        setTimeout(() => setShowNotification(false), 20000);
       }
     }, 10000);
 
