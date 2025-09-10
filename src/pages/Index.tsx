@@ -65,7 +65,28 @@ const Index = () => {
       {isSearching ? (
         // Search results page - clean white background with only products
         <div className="bg-white min-h-screen">
-          <main className="container mx-auto px-4 py-8">        
+          <main className="container mx-auto px-4 py-8">
+            {/* Botão Voltar */}
+            <div className="mb-6">
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('all');
+                }}
+                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+              >
+                <svg 
+                  className="w-5 h-5" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Voltar à página principal
+              </button>
+            </div>
+            
             <ProductList
               searchTerm={searchTerm}
               selectedCategory={selectedCategory}

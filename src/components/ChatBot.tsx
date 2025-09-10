@@ -24,6 +24,7 @@ const ChatBot = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -33,6 +34,34 @@ const ChatBot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Notificação automática após 10 segundos
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isOpen) {
+        setShowNotification(true);
+        // Remove a notificação após 5 segundos
+        setTimeout(() => setShowNotification(false), 5000);
+      }
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
+  const handleNotificationClick = () => {
+    setShowNotification(false);
+    setIsOpen(true);
+    
+    // Adiciona a mensagem do Pedro
+    const pedroMessage: Message = {
+      id: 'pedro-welcome',
+      text: 'Olá! Eu sou o Pedro, em que posso te ajudar hoje?',
+      isUser: false,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, pedroMessage]);
+  };
 
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -86,6 +115,33 @@ const ChatBot = () => {
 
   return (
     <>
+      {/* Notificação automática */}
+      {showNotification && !isOpen && (
+        <div 
+          onClick={handleNotificationClick}
+          className="fixed bottom-24 right-6 bg-white rounded-lg shadow-xl border p-4 max-w-xs cursor-pointer z-[9999] animate-bounce"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
+              <MessageCircle className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-sm text-foreground">Pedro</p>
+              <p className="text-xs text-muted-foreground">Olá! Em que posso te ajudar hoje?</p>
+            </div>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowNotification(false);
+              }}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Botão do chat */}
       <Button
         onClick={() => setIsOpen(true)}
