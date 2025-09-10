@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Heart, Eye, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabasePublic as supabase } from '@/integrations/supabase/publicClient';
 import { useAuth } from '@/hooks/useAuth';
-import ProductDetail from '@/components/ProductDetail';
 
 interface Product {
   id: string;
@@ -19,10 +19,9 @@ interface Product {
 }
 
 const FeaturedProducts = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [visibleProducts, setVisibleProducts] = useState(4);
   const { profile } = useAuth();
 
@@ -78,13 +77,7 @@ const FeaturedProducts = () => {
   };
 
   const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-    setIsDetailOpen(true);
-  };
-
-  const closeProductDetail = () => {
-    setIsDetailOpen(false);
-    setSelectedProduct(null);
+    navigate(`/produto/${product.id}`);
   };
 
   const getPrice = (product: Product) => {
@@ -225,24 +218,18 @@ const FeaturedProducts = () => {
           ))}
         </div>
 
-        {/* Botão Ver Todos - só mostra se há mais produtos */}
+        {/* Link para página de produtos - só mostra se há mais produtos */}
         {hasMoreProducts && (
           <div className="flex justify-center mt-8">
             <Button 
-              onClick={loadMoreProducts}
+              onClick={() => navigate('/produtos')}
               className="bg-gradient-primary hover:opacity-90 font-semibold px-8 h-12"
             >
-              Ver Todos os Produtos em Destaque
+              Ver Todos os Produtos
             </Button>
           </div>
         )}
       </div>
-
-      <ProductDetail 
-        product={selectedProduct}
-        isOpen={isDetailOpen}
-        onClose={closeProductDetail}
-      />
     </section>
   );
 };

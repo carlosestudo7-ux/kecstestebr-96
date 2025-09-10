@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabasePublic as supabase } from '@/integrations/supabase/publicClient';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MessageCircle, ShoppingCart, Eye } from 'lucide-react';
-import ProductDetail from '@/components/ProductDetail';
 import { useAuth } from '@/hooks/useAuth';
 
 interface Product {
@@ -23,10 +23,9 @@ interface ProductListProps {
 }
 
 const ProductList = ({ searchTerm, selectedCategory }: ProductListProps) => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const { profile } = useAuth();
 
   useEffect(() => {
@@ -114,13 +113,7 @@ const ProductList = ({ searchTerm, selectedCategory }: ProductListProps) => {
   };
 
   const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-    setIsDetailOpen(true);
-  };
-
-  const closeProductDetail = () => {
-    setIsDetailOpen(false);
-    setSelectedProduct(null);
+    navigate(`/produto/${product.id}`);
   };
 
   if (loading) {
@@ -297,16 +290,23 @@ const ProductList = ({ searchTerm, selectedCategory }: ProductListProps) => {
               </CardContent>
             </Card>
           ))}
-        </div>
-      )}
+         </div>
+       )}
 
-      <ProductDetail 
-        product={selectedProduct}
-        isOpen={isDetailOpen}
-        onClose={closeProductDetail}
-      />
-    </div>
-  );
+       {/* Navigation link for search context */}
+       {(searchTerm || selectedCategory !== 'all') && products.length > 0 && (
+         <div className="text-center mt-8">
+           <Button
+             variant="outline"
+             onClick={() => navigate('/produtos')}
+             className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+           >
+             Ver todos os produtos
+           </Button>
+         </div>
+       )}
+     </div>
+   );
 };
 
 export default ProductList;

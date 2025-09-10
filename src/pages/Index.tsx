@@ -1,106 +1,51 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import Footer from '@/components/Footer';
-import SearchAndFilters from '@/components/SearchAndFilters';
-import ProductList from '@/components/ProductList';
 import CategoriesSection from '@/components/CategoriesSection';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import BannerCarousel from '@/components/BannerCarousel';
 import ChatBot from '@/components/ChatBot';
-import AuthPage from '@/components/Auth/AuthPage';
-import AdminDashboard from '@/components/Admin/AdminDashboard';
 
 
 const Index = () => {
-  const [showAuth, setShowAuth] = useState(false);
-  const [showAdmin, setShowAdmin] = useState(false);
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   
   const handleSearchChange = (term: string) => {
     console.log('📝 Index - Search term changed:', term);
-    setSearchTerm(term);
-    // When user starts typing, reset category to search in all products
-    if (term.trim() !== '' && selectedCategory !== 'all') {
-      console.log('🔄 Index - Resetting category to "all" for search');
-      setSelectedCategory('all');
+    if (term.trim() !== '') {
+      // Navigate to products page with search
+      navigate(`/produtos?search=${encodeURIComponent(term.trim())}`);
     }
   };
   
   const handleCategoryChange = (category: string) => {
     console.log('📝 Index - Category changed:', category);
-    setSelectedCategory(category);
+    if (category !== 'all') {
+      // Navigate to products page with category
+      navigate(`/produtos?categoria=${encodeURIComponent(category)}`);
+    }
   };
 
-  if (showAuth) {
-    return <AuthPage onBack={() => setShowAuth(false)} />;
-  }
-
-  if (showAdmin) {
-    return <AdminDashboard onBack={() => setShowAdmin(false)} />;
-  }
-
-  
-  // Check if user is searching or has selected a category
-  const isSearching = searchTerm.trim() !== '' || selectedCategory !== 'all';
-  
   return (
     <div className="min-h-screen bg-background">
       <Header
-        onAuthClick={() => {
-          console.log('🔑 Index - Auth clicked');
-          setShowAuth(true);
-        }}
-        onAdminClick={() => {
-          console.log('👑 Index - Admin clicked');
-          setShowAdmin(true);
-        }}
+        onAuthClick={() => navigate('/auth')}
+        onAdminClick={() => navigate('/admin')}
         searchTerm={searchTerm}
         selectedCategory={selectedCategory}
         onSearchChange={handleSearchChange}
         onCategoryChange={handleCategoryChange}
       />
       
-      {isSearching ? (
-        // Search results page - clean white background with only products
-        <div className="bg-white min-h-screen">
-          <main className="container mx-auto px-4 py-8">
-            {/* Botão Voltar */}
-            <div className="mb-6">
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setSelectedCategory('all');
-                }}
-                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-              >
-                <svg 
-                  className="w-5 h-5" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Voltar à página principal
-              </button>
-            </div>
-            
-            <ProductList
-              searchTerm={searchTerm}
-              selectedCategory={selectedCategory}
-            />
-          </main>
-        </div>
-      ) : (
-        // Home page with all sections
-        <>
-          <BannerCarousel />
-          <FeaturedProducts />
-          <CategoriesSection onCategorySelect={handleCategoryChange} />
-        </>
-      )}
+      {/* Home page with all sections */}
+      <HeroSection />
+      <BannerCarousel />
+      <FeaturedProducts />
+      <CategoriesSection onCategorySelect={handleCategoryChange} />
       
       <Footer />
       <ChatBot />

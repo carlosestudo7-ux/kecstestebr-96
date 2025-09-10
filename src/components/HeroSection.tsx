@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-banner.jpg";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="relative overflow-hidden">
       {/* Background with gradient overlay */}
@@ -26,6 +29,7 @@ const HeroSection = () => {
             <Button 
               size="lg" 
               className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg shadow-elegant"
+              onClick={() => navigate('/produtos')}
             >
               Ver Ofertas
             </Button>
@@ -33,6 +37,7 @@ const HeroSection = () => {
               size="lg" 
               variant="outline" 
               className="border-white text-white hover:bg-white hover:text-primary font-semibold px-8 py-4 text-lg"
+              onClick={() => window.open('https://wa.me/558534833373?text=Olá!%20Gostaria%20de%20baixar%20o%20app%20da%20KECINFORSTORE', '_blank')}
             >
               Baixar App
             </Button>
